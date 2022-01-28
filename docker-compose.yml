@@ -1,16 +1,19 @@
 version: '3.7'
 
 services:
-
   mt:
-    build: .
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./compose/app/Dockerfile
+    image: twb_mt
+    command: /start.sh
+    #restart: unless-stopped
     # runtime: nvidia  # Comment out in local
     ports:
       - 8001:8000
     volumes:
-      - ../translation-models:/app/models
+      - ./app:/app
+      - ./.vols/translation-models:/app/models
     environment:
       - MT_API_CONFIG=/app/config.json
       - MT_API_DEVICE=cpu #or gpu, if so make runtime:nvidia
