@@ -12,7 +12,7 @@ services:
     ports:
       - 8001:8000
     volumes:
-      - ./.vols/translation-models:/app/models
+      - ../.vols/translation-models:/app/models
     env_file:
       - .env/.dev
 
