@@ -12,7 +12,6 @@ services:
     ports:
       - 8001:8000
     volumes:
-      - ./app:/app
       - ./.vols/translation-models:/app/models
     env_file:
       - .env/.dev

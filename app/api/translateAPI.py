@@ -3,9 +3,11 @@ import os
 import re
 from typing import List, Optional, Dict, Callable
 
-from fastapi import Header, APIRouter, HTTPException
+from fastapi import Header, HTTPException
 from nltk.tokenize import sent_tokenize, word_tokenize
 from pydantic import BaseModel
+
+from . import translate_router
 
 #constants
 CONFIG_JSON_PATH = os.getenv('MT_API_CONFIG')
@@ -16,8 +18,6 @@ MOSES_TOKENIZER_DEFAULT_LANG = 'en'
 HELSINKI_NLP = 'Helsinki-NLP'
 SUPPORTED_MODEL_TYPES = ['opus', 'ctranslator2', 'dummy']
 MODEL_TAG_SEPARATOR = "-"
-
-translate = APIRouter()
 
 #models and data
 loaded_models = {}
@@ -453,7 +453,7 @@ class LanguagesResponse(BaseModel):
     models: Dict
     languages: Dict
 
-@translate.post('/', status_code=200)
+@translate_router.post('/', status_code=200)
 async def translate_sentence(request: TranslationRequest):
 
     model_id = get_model_id(request.src, request.tgt, request.alt)
@@ -466,7 +466,7 @@ async def translate_sentence(request: TranslationRequest):
     response = TranslationResponse(translation=translation)
     return response
 
-@translate.post('/batch', status_code=200)
+@translate_router.post('/batch', status_code=200)
 async def translate_batch(request: BatchTranslationRequest):
     print(request.texts)
     print(type(request.texts))
@@ -484,7 +484,7 @@ async def translate_batch(request: BatchTranslationRequest):
     response = BatchTranslationResponse(translation=translated_batch)
     return response
 
-@translate.get('/', status_code=200)
+@translate_router.get('/', status_code=200)
 async def languages():
     languages_list = {}
     for model_id in loaded_models.keys():
@@ -499,7 +499,7 @@ async def languages():
     return LanguagesResponse(languages=language_codes, models=languages_list)
 
 
-@translate.on_event("startup")
+@translate_router.on_event("startup")
 async def startup_event():
     load_models(CONFIG_JSON_PATH)
 

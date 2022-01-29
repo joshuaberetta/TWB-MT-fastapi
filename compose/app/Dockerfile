@@ -14,6 +14,8 @@ COPY ./app/requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt \
     && rm -rf /root/.cache/pip
 
+COPY ./app /app
+
 COPY ./compose/app/start.sh /start.sh
 RUN chmod +x /start.sh
 
