@@ -12,7 +12,53 @@ services:
     ports:
       - 8001:8000
     volumes:
+      - .:/app
       - ../.vols/translation-models:/app/models
     env_file:
       - .env/.dev
+    depends_on:
+      - redis
 
+  redis:
+    image: redis:6-alpine
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./compose/app/Dockerfile
+    image: celery_worker
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+    env_file:
+      - .env/.dev
+    depends_on:
+      - redis
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: ./compose/app/Dockerfile
+    image: celery_beat
+    command: /start-celerybeat
+    volumes:
+      - .:/app
+    env_file:
+      - .env/.dev
+    depends_on:
+      - redis
+
+  flower:
+    build:
+      context: .
+      dockerfile: ./compose/app/Dockerfile
+    image: celery_flower
+    command: /start-flower
+    volumes:
+      - .:/app
+    env_file:
+      - .env/.dev
+    ports:
+      - 5557:5555
+    depends_on:
+      - redis

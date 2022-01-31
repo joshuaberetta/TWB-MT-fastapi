@@ -14,10 +14,17 @@ COPY ./app/requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt \
     && rm -rf /root/.cache/pip
 
-COPY ./app /app
-
 COPY ./compose/app/start.sh /start.sh
 RUN chmod +x /start.sh
+
+COPY ./compose/app/celery/worker/start.sh /start-celeryworker
+RUN chmod +x /start-celeryworker
+
+COPY ./compose/app/celery/beat/start.sh /start-celerybeat
+RUN chmod +x /start-celerybeat
+
+COPY ./compose/app/celery/flower/start.sh /start-flower
+RUN chmod +x /start-flower
 
 WORKDIR /app
 

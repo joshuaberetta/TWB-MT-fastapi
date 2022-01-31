@@ -1,6 +1,11 @@
-MT_API_CONFIG=/app/config.json
+MT_API_CONFIG=/app/app/config.json
 MT_API_DEVICE=cpu #or gpu, if so make runtime:nvidia
 MT_API_THREADS=16
 MODELS_ROOT=/app/models
 NVIDIA_VISIBLE_DEVICES=all
 NVIDIA_DRIVER_CAPABILITIES=all
+
+FASTAPI_CONFIG=development
+DATABASE_URL=postgresql://fastapi_celery:fastapi_celery@db/fastapi_celery
+CELERY_BROKER_URL=redis://redis:6379/0
+CELERY_RESULT_BACKEND=redis://redis:6379/0
